@@ -1,0 +1,106 @@
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
+
+  animation: modalBgFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.modal {
+  position: relative;
+
+  width: min(92%, 520px);
+  max-height: 92vh;
+
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  padding-right: 3.25rem;
+
+  border-radius: var(--radius-xl);
+
+  background: var(--background-primary);
+  box-shadow: var(--shadow-xl);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  overflow: hidden;
+
+  animation: modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.modal-exit {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: var(--radius-md);
+  background: transparent;
+
+  color: var(--text-secondary);
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1;
+
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  outline-offset: 3px;
+}
+
+.modal-exit:hover {
+  background: var(--background-secondary);
+  color: var(--primary);
+  transform: rotate(90deg) scale(1.08);
+}
+
+.modal-exit:focus-visible {
+  outline: 2px solid var(--primary);
+  background: var(--background-secondary);
+}
+
+@keyframes modalBgFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-muted) transparent;
+}

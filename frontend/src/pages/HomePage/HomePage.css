@@ -1,0 +1,15 @@
+.home-page-container {
+  width: 100%;
+  max-width: 1200px;
+
+  margin-inline: auto;
+
+  padding: clamp(var(--space-md), 2vw, var(--space-xl));
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-lg);
+
+  box-sizing: border-box;
+}

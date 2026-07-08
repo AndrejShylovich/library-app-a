@@ -1,0 +1,150 @@
+.book-card {
+  width: 100%;
+  max-width: 22rem;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-md);
+  padding: var(--space-md);
+
+  border-radius: var(--radius-lg);
+
+  background: var(--background-secondary);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+
+  box-shadow: var(--shadow-md);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.book-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+}
+
+.book-card-cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.book-card-cover img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-card-cover img {
+  transform: scale(1.04);
+}
+
+.book-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.book-card-title {
+  font-size: clamp(1rem, 1.2vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.4;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.book-card-author {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  transition: color 0.2s ease;
+}
+
+.book-card-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+
+  flex: 1;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.book-card-loan-button {
+  width: 100%;
+  height: 2.75rem;
+
+  border-radius: var(--radius-md);
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border 0.2s ease;
+}
+
+.book-card-loan-button.checkout {
+  background: var(--secondary);
+  color: white;
+}
+
+.book-card-loan-button.checkin {
+  background: var(--danger);
+  color: white;
+}
+
+.book-card-loan-button.checkout:hover {
+  background: var(--background-secondary);
+  border: 2px solid var(--secondary);
+  color: var(--secondary);
+}
+
+.book-card-loan-button.checkin:hover {
+  background: var(--background-secondary);
+  border: 2px solid var(--danger);
+  color: var(--danger);
+}
+
+.book-card-loan-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 480px) {
+  .book-card {
+    padding: var(--space-sm);
+  }
+
+  .book-card-description {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}

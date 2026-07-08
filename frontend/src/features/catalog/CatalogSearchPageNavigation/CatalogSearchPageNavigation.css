@@ -1,0 +1,111 @@
+.catalog-search-page-navigator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: var(--space-md);
+
+  margin-top: clamp(var(--space-lg), 3vw, var(--space-xl));
+}
+
+.catalog-search-page-navigator-navigate {
+  cursor: pointer;
+
+  padding: 0.4rem 0.7rem;
+
+  border-radius: var(--radius-md);
+
+  color: var(--text-secondary);
+
+  font-weight: 500;
+  font-size: 0.95rem;
+
+  background: transparent;
+
+  transition:
+    background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.catalog-search-page-navigator-navigate:hover {
+  background: var(--background-secondary);
+  color: var(--primary);
+}
+
+.catalog-search-page-navigator-navigate.disabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.catalog-search-page-navigator-navigate:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.catalog-search-page-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: var(--space-sm);
+}
+
+.catalog-search-page-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2rem;
+  height: 2rem;
+
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  color: var(--text-secondary);
+
+  background: transparent;
+
+  transition:
+    background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.catalog-search-page-number:hover {
+  background: var(--background-secondary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.number-active {
+  background: color-mix(in srgb, var(--primary) 15%, transparent);
+  color: var(--primary);
+
+  border-radius: var(--radius-md);
+}
+
+.catalog-search-page-number:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .catalog-search-page-navigator {
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+  }
+
+  .catalog-search-page-number {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
