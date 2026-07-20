@@ -46,7 +46,6 @@ Thumbs.db
 Desktop.ini
 
 # Package manager specific
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
 shrinkwrap.yaml
