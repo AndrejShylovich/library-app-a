@@ -85,7 +85,7 @@ export async function searchForBooksByQuery(req: Request, res: Response) {
     subjects,
     genre,
     page = "1",
-    limit = "25",
+    limit = "24",
   } = req.query;
 
   try {
