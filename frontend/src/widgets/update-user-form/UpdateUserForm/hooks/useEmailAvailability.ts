@@ -1,37 +1,58 @@
-import axios from "axios";
+import { useCheckEmail } from "@/entities/user/model/hooks/useCheckEmail";
 import { useCallback, useState } from "react";
 
-const VITE_API_URL = import.meta.env.VITE_API_URL;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const useEmailAvailability = () => {
   const [emailError, setEmailError] = useState<string | null>(null);
-  const [checking, setChecking] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(false);
 
-  const checkEmail = useCallback(
+  const [checkEmail, { isLoading: checking }] = useCheckEmail();
+
+  const resetEmailCheck = useCallback(() => {
+    setEmailChecked(false);
+    setEmailError(null);
+  }, []);
+
+  const validateEmail = useCallback(
     async (email: string, originalEmail?: string) => {
       if (!email || email === originalEmail) {
         setEmailError(null);
+        setEmailChecked(true);
+
         return true;
       }
+      if (!EMAIL_REGEX.test(email)) {
+        setEmailError("Invalid email format");
+        return false;
+      }
 
-      setChecking(true);
+      setEmailChecked(false);
 
       try {
-        const { data } = await axios.post(`${VITE_API_URL}/auth/check-email`, {
-          email,
-        });
+        const available = await checkEmail(email);
 
-        setEmailError(data.available ? null : "Email is already taken");
-        return data.available;
+        setEmailError(available ? null : "Email is already taken");
+
+        setEmailChecked(true);
+
+        return available;
       } catch {
         setEmailError("Failed to check email");
+
+        setEmailChecked(true);
+
         return false;
-      } finally {
-        setChecking(false);
       }
     },
-    [],
+    [checkEmail],
   );
 
-  return { emailError, checking, checkEmail };
+  return {
+    emailError,
+    checking,
+    emailChecked,
+    checkEmail: validateEmail,
+    resetEmailCheck,
+  };
 };

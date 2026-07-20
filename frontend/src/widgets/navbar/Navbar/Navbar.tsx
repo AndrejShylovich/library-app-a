@@ -30,7 +30,7 @@ export const Navbar = () => {
   } = useNavbarLogic();
   return (
     <nav className="navbar">
-      {/* LEFT */}
+  
       <Link to="/" className="navbar-logo-section">
         <Book className="navbar-logo-icon" />
         <h3>My Library</h3>
@@ -38,14 +38,14 @@ export const Navbar = () => {
 
       <ThemeToggle />
 
-      {/* RIGHT */}
+
       <div className="navbar-right-section">
         <Link to="/catalog" className="navbar-option">
           <h3>Catalog</h3>
           <MenuBook sx={iconSx} />
         </Link>
 
-        {/* SEARCH */}
+
         <div className="navbar-search-box">
           <Input
             className="navbar-search-input"
@@ -59,7 +59,7 @@ export const Navbar = () => {
           />
         </div>
 
-        {/* AUTH */}
+   
         {loggedInUser ? (
           <button
             type="button"

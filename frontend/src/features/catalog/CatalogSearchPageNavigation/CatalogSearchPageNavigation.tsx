@@ -35,20 +35,31 @@ export const CatalogSearchPageNavigation: React.FC = () => {
       </Button>
 
       <div className="catalog-search-page-numbers">
-        {pageNumbers.map((num) => {
-          const pageNum = Number(num);
-          const isActive = pageNum === currentPage;
+        {pageNumbers.map((item, index) => {
+          if (item.type === "ellipsis") {
+            return (
+              <span
+                key={`ellipsis-${index}`}
+                className="catalog-search-page-ellipsis"
+              >
+                ...
+              </span>
+            );
+          }
+
+          const isActive = item.value === currentPage;
 
           return (
             <Button
-              key={num}
-              id={num}
+              key={item.value}
               className={`catalog-search-page-number ${
                 isActive ? "number-active" : ""
               }`}
-              onClick={isActive ? undefined : () => navigateToNumber(pageNum)}
+              onClick={
+                isActive ? undefined : () => navigateToNumber(item.value)
+              }
             >
-              {num}
+              {item.value}
             </Button>
           );
         })}

@@ -1,5 +1,11 @@
 import { baseApi } from "@/shared/api/baseApi";
 
+import {
+  hasData,
+  invalidResponse,
+  unwrapError,
+} from "@/shared/api/queryHelpers";
+
 import type {
   BookDto,
   BookPageResult,
@@ -11,7 +17,7 @@ import type { LoanRecordDto } from "@/entities/loan-record/model/dto/LoanRecordD
 
 import { createCheckoutRecord } from "../model/lib/createCheckoutRecord";
 
-import { createCheckinRecord } from "../model/lib/createCheckingRecord";
+import { createCheckinRecord } from "../model/lib/createCheckinRecord";
 
 import { normalizeLoanRecord } from "../model/lib/normalizeLoanRecord";
 
@@ -39,16 +45,6 @@ type CardResponse = {
 
 type LoanResponse = {
   record: LoanRecordDto;
-};
-
-const getError = (result: unknown) => {
-  if ("error" in (result as object)) {
-    return {
-      error: (result as { error: unknown }).error,
-    };
-  }
-
-  return null;
 };
 
 export const bookQueryApi = baseApi.injectEndpoints({
@@ -82,15 +78,17 @@ export const bookQueryApi = baseApi.injectEndpoints({
           },
         });
 
-        const error = getError(result);
+        const error = unwrapError(result);
 
         if (error) {
           return error;
         }
 
-        const data = result.data as BarcodeSearchResponse;
+        if (!hasData<BarcodeSearchResponse>(result)) {
+          return invalidResponse("Invalid barcode search response");
+        }
 
-        const [book] = data.page.items;
+        const [book] = result.data.page.items;
 
         if (!book) {
           return {
@@ -120,17 +118,17 @@ export const bookQueryApi = baseApi.injectEndpoints({
           url: `/card/${payload.libraryCard}`,
         });
 
-        const cardError = getError(cardResult);
+        const cardError = unwrapError(cardResult);
 
         if (cardError) {
           return cardError;
         }
 
-        const {
-          libraryCard: {
-            user: { _id: patronId },
-          },
-        } = cardResult.data as CardResponse;
+        if (!hasData<CardResponse>(cardResult)) {
+          return invalidResponse("Invalid card response");
+        }
+
+        const patronId = cardResult.data.libraryCard.user._id;
 
         const loanResult = await baseQuery({
           url: "/loan",
@@ -138,18 +136,22 @@ export const bookQueryApi = baseApi.injectEndpoints({
           data: createCheckoutRecord(payload, patronId),
         });
 
-        const loanError = getError(loanResult);
+        const loanError = unwrapError(loanResult);
 
         if (loanError) {
           return loanError;
         }
 
+        if (!hasData<LoanResponse>(loanResult)) {
+          return invalidResponse("Invalid loan response");
+        }
+
         return {
-          data: normalizeLoanRecord((loanResult.data as LoanResponse).record),
+          data: normalizeLoanRecord(loanResult.data.record),
         };
       },
 
-      invalidatesTags: ["Book"],
+      invalidatesTags: ["Book", "LoanRecord"],
     }),
 
     checkinBook: builder.mutation<LoanRecordDto, CheckinBookDto>({
@@ -160,18 +162,22 @@ export const bookQueryApi = baseApi.injectEndpoints({
           data: createCheckinRecord(payload),
         });
 
-        const error = getError(result);
+        const error = unwrapError(result);
 
         if (error) {
           return error;
         }
 
+        if (!hasData<LoanResponse>(result)) {
+          return invalidResponse("Invalid loan response");
+        }
+
         return {
-          data: normalizeLoanRecord((result.data as LoanResponse).record),
+          data: normalizeLoanRecord(result.data.record),
         };
       },
 
-      invalidatesTags: ["Book"],
+      invalidatesTags: ["Book", "LoanRecord"],
     }),
   }),
 });

@@ -29,7 +29,8 @@ export const useUpdateUserForm = (profileUser?: DomainUser) => {
   const { user, isEditing, updateField, setIsEditing } =
     useEditableUser(domainUser);
 
-  const { emailError, checking, checkEmail } = useEmailAvailability();
+  const { emailError, checking, emailChecked, checkEmail, resetEmailCheck } =
+    useEmailAvailability();
 
   useEffect(() => {
     if (isSuccess) {
@@ -55,16 +56,22 @@ export const useUpdateUserForm = (profileUser?: DomainUser) => {
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      updateField(e.target.name as keyof typeof user, e.target.value);
+      const { name, value } = e.target;
+
+      if (name === "email") {
+        resetEmailCheck();
+      }
+
+      updateField(name as keyof typeof user, value);
     },
-    [updateField],
+    [updateField, resetEmailCheck],
   );
 
   const handleSubmit = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
 
-      if (!user || emailError) return;
+      if (!user || emailError || !emailChecked) return;
 
       try {
         await updateUser(user);
@@ -74,7 +81,7 @@ export const useUpdateUserForm = (profileUser?: DomainUser) => {
         console.error(error);
       }
     },
-    [user, emailError, updateUser, setIsEditing],
+    [user, emailError, updateUser, setIsEditing, emailChecked],
   );
 
   const handleLogout = useCallback(async () => {
@@ -89,6 +96,7 @@ export const useUpdateUserForm = (profileUser?: DomainUser) => {
 
     emailError,
     checking,
+    emailChecked,
 
     isLoading,
     isSuccess,

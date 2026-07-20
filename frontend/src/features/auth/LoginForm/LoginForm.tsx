@@ -39,7 +39,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ toggleRegister }) => {
           placeholder={FIELD_LABELS.email}
           value={email}
           onChange={handleEmailChange}
-          required // Возвращаем нативную валидацию браузера
+          required 
           aria-label={FIELD_LABELS.email}
         />
       </div>

@@ -2,6 +2,7 @@ import { LoanRecordMapper } from "@/entities/loan-record/model/mapper/LoanRecord
 import type { DomainBook, DomainCheckinBookPayload } from "../domain/Book";
 import type { BookDto, CheckinBookDto } from "../dto/BookDto";
 import { UserMapper } from "@/entities/user/model/mapper/UserMapper";
+import { parseDate } from "@/shared/lib/utils/date.utils";
 
 export const BookMapper = {
   toDomain(dto: BookDto): DomainBook {
@@ -13,7 +14,7 @@ export const BookMapper = {
       authors: dto.authors,
       description: dto.description,
       subjects: dto.subjects,
-      publicationDate: new Date(dto.publicationDate),
+      publicationDate: parseDate(dto.publicationDate),
       publisher: dto.publisher,
       pages: dto.pages,
       genre: dto.genre,

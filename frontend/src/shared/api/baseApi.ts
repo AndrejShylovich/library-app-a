@@ -3,19 +3,25 @@ import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type { AxiosError, AxiosRequestConfig } from "axios";
 
 import { api } from "./axios";
-import { clearAuthData } from "../lib/auth/authStorage";
+
+type AxiosBaseQueryArgs = {
+  url: string;
+  method?: AxiosRequestConfig["method"];
+  data?: unknown;
+  params?: unknown;
+};
+
+export type AxiosErrorResponse = {
+  status?: number;
+  data?: unknown;
+};
+
+const isAxiosError = (error: unknown): error is AxiosError => {
+  return typeof error === "object" && error !== null && "response" in error;
+};
 
 const axiosBaseQuery =
-  (): BaseQueryFn<
-    {
-      url: string;
-      method?: AxiosRequestConfig["method"];
-      data?: unknown;
-      params?: unknown;
-    },
-    unknown,
-    unknown
-  > =>
+  (): BaseQueryFn<AxiosBaseQueryArgs, unknown, AxiosErrorResponse> =>
   async ({ url, method = "GET", data, params }) => {
     try {
       const result = await api({
@@ -28,17 +34,20 @@ const axiosBaseQuery =
       return {
         data: result.data,
       };
-    } catch (axiosError) {
-      const err = axiosError as AxiosError;
-
-      if (err.response?.status === 401) {
-        clearAuthData();
+    } catch (error) {
+      if (isAxiosError(error)) {
+        return {
+          error: {
+            status: error.response?.status,
+            data: error.response?.data,
+          },
+        };
       }
 
       return {
         error: {
-          status: err.response?.status,
-          data: err.response?.data,
+          status: 500,
+          data: "Unknown error",
         },
       };
     }
@@ -49,7 +58,12 @@ export const baseApi = createApi({
 
   baseQuery: axiosBaseQuery(),
 
-  tagTypes: ["Book", "User", "LibraryCard"],
+  tagTypes: [
+    "Book",
+    "User",
+    "LibraryCard",
+    "LoanRecord",
+  ],
 
   endpoints: () => ({}),
 });

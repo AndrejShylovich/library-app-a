@@ -14,6 +14,7 @@ export const UpdateUserForm: React.FC<Props> = ({ profileUser }) => {
     isEditing,
     disabled,
     emailError,
+    emailChecked,
     checking,
     handleChange,
     handleSubmit,
@@ -55,7 +56,7 @@ export const UpdateUserForm: React.FC<Props> = ({ profileUser }) => {
         <Button
           className="profile-button"
           onClick={handleSubmit}
-          disabled={!!emailError || checking}
+          disabled={!!emailError || checking || !emailChecked}
         >
           {checking ? "Checking email..." : "Update Profile"}
         </Button>

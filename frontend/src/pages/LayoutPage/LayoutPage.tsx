@@ -5,7 +5,6 @@ import type { RootState } from "@/shared/store/ReduxStore";
 
 import { LoginRegisterModal } from "@/features/auth/LoginRegisterModal/LoginRegisterModal";
 import { LibraryCardModal } from "@/features/auth/LibraryCardModal/LibraryCardModal";
-/*import { LoanBookModal } from "@/features/book/LoanBookModal/LoanBookModal";*/
 
 import { Navbar } from "@/widgets/navbar/Navbar/Navbar";
 import { Footer } from "@/widgets/footer/Footer/Footer";
@@ -36,4 +35,3 @@ export default function LayoutPage() {
   );
 }
 
-/*{modal.displayLoan && <LoanBookModal />}*/

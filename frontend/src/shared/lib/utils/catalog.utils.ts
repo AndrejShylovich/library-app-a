@@ -12,6 +12,10 @@ const GENRES = [
   "Young Adult",
 ] as const;
 
+type PageItem =
+  | { type: "page"; value: number }
+  | { type: "ellipsis" };
+
 export function generateRandomGenres(): string[] {
   return [...GENRES].sort(() => Math.random() - 0.5).slice(0, 3);
 }
@@ -41,40 +45,55 @@ export function getRandomBooksByGenre(
   return randomBooks;
 }
 
-export function calculatePaging(pageInfo: PageInfo): string[] {
-  const pages: string[] = [];
-
-  if (!pageInfo) {
-    return pages;
-  }
+export function calculatePaging(pageInfo: PageInfo): PageItem[] {
+  const pages: PageItem[] = [];
 
   const { totalPages: total, currentPage: current } = pageInfo;
 
+  const addPage = (page: number) => {
+    pages.push({
+      type: "page",
+      value: page,
+    });
+  };
+
+  const addEllipsis = () => {
+    pages.push({
+      type: "ellipsis",
+    });
+  };
+
   if (total <= 10) {
     for (let i = 1; i <= total; i++) {
-      pages.push(`${i}`);
+      addPage(i);
     }
   } else if (current <= 7) {
     for (let i = 1; i <= 8; i++) {
-      pages.push(`${i}`);
+      addPage(i);
     }
 
-    pages.push("...");
-    pages.push(`${total - 1}`, `${total}`);
+    addEllipsis();
+    addPage(total - 1);
+    addPage(total);
   } else if (total - current > 5) {
-    pages.push("1", "2", "...");
+    addPage(1);
+    addPage(2);
+    addEllipsis();
 
     for (let i = current; i <= current + 4; i++) {
-      pages.push(`${i}`);
+      addPage(i);
     }
 
-    pages.push("...");
-    pages.push(`${total - 1}`, `${total}`);
+    addEllipsis();
+    addPage(total - 1);
+    addPage(total);
   } else {
-    pages.push("1", "2", "...");
+    addPage(1);
+    addPage(2);
+    addEllipsis();
 
     for (let i = total - 5; i <= total; i++) {
-      pages.push(`${i}`);
+      addPage(i);
     }
   }
 

@@ -1,4 +1,9 @@
 import { baseApi } from "@/shared/api/baseApi";
+import {
+  hasData,
+  unwrapError,
+  invalidResponse,
+} from "@/shared/api/queryHelpers";
 
 interface CreateLibraryCardResponse {
   libraryCard: {
@@ -20,16 +25,10 @@ const isValidLibraryCardResponse = (
   );
 };
 
-
 export const libraryCardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createLibraryCard: builder.mutation<string, string>({
-      async queryFn(
-        userId,
-        _api,
-        _extraOptions,
-        baseQuery,
-      ) {
+      async queryFn(userId, _api, _extraOptions, baseQuery) {
         const result = await baseQuery({
           url: "/card",
           method: "POST",
@@ -38,38 +37,27 @@ export const libraryCardApi = baseApi.injectEndpoints({
           },
         });
 
+        const error = unwrapError(result);
 
-        if ("error" in result) {
-          return {
-            error: result.error,
-          };
+        if (error) {
+          return error;
         }
 
-
-        if (!isValidLibraryCardResponse(result.data)) {
-          return {
-            error: {
-              status: 500,
-              data: "Invalid library card response",
-            },
-          };
+        if (
+          !hasData<CreateLibraryCardResponse>(result) ||
+          !isValidLibraryCardResponse(result.data)
+        ) {
+          return invalidResponse("Invalid library card response");
         }
-
 
         return {
           data: result.data.libraryCard._id,
         };
       },
 
-
-      invalidatesTags: [
-        "LibraryCard",
-      ],
+      invalidatesTags: ["LibraryCard"],
     }),
   }),
 });
 
-
-export const {
-  useCreateLibraryCardMutation,
-} = libraryCardApi;
+export const { useCreateLibraryCardMutation } = libraryCardApi;
